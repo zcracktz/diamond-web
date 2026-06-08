@@ -12,10 +12,41 @@
     font-size: 12px !important;
 }
 
-/* Placeholder color abu-abu */
+/* Placeholder color abu-abu terang */
 .form-control::placeholder, .form-select::placeholder {
-    color: #6c757d !important;
+    color: #ced4da !important;
     opacity: 1 !important;
+}
+
+/* Select placeholder (empty value) styling */
+.form-select.is-placeholder {
+    color: #ced4da !important;
+}
+
+/* Date picker — default (empty) state */
+input[type="date"]:not(:has(input)) {
+    color: #ced4da !important;
+}
+
+/* Date picker — filled state */
+input[type="date"] {
+    color: #212529 !important;
+}
+input[type="date"]:invalid,
+input[type="date"][value=""] {
+    color: #ced4da !important;
+}
+
+/* Date picker separator slash */
+input[type="date"]::-webkit-datetime-edit-separator {
+    color: #ced4da !important;
+}
+
+/* Date picker fields when empty */
+input[type="date"]::-webkit-datetime-edit-year-field:not([aria-valuetext]),
+input[type="date"]::-webkit-datetime-edit-month-field:not([aria-valuetext]),
+input[type="date"]::-webkit-datetime-edit-day-field:not([aria-valuetext]) {
+    color: #ced4da !important;
 }
 
 /* Khusus untuk textarea */
@@ -200,68 +231,28 @@ input[type="date"] {
                             </div>
                         </div>
 
-                        <!-- Jenis Data Information Section -->
-                        <div id="jenis-data-info" class="card border-secondary mb-4" style="display: none;">
-                            <div class="card-header bg-light">
-                                <h6 class="mb-0"><i class="feather-info me-2"></i>Informasi Jenis Data ILAP</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
-                                        <div class="info-group mb-2">
-                                            <label class="text-muted small mb-1">ILAP</label>
-                                            <p class="fw-semibold mb-0" id="info-nama-ilap">-</p>
-                                        </div>
-                                        <div class="info-group mb-2">
-                                            <label class="text-muted small mb-1">Kategori ILAP</label>
-                                            <p class="fw-semibold mb-0" id="info-kategori-ilap">-</p>
-                                        </div>
-                                        <div class="info-group mb-2">
-                                            <label class="text-muted small mb-1">Kategori Wilayah</label>
-                                            <p class="fw-semibold mb-0" id="info-kategori-wilayah">-</p>
-                                        </div>
-                                        <div class="info-group mb-2">
-                                            <label class="text-muted small mb-1">Jenis Tabel</label>
-                                            <p class="fw-semibold mb-0" id="info-jenis-tabel">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="info-group mb-2">
-                                            <label class="text-muted small mb-1">Klasifikasi Jenis Data</label>
-                                            <p class="fw-semibold mb-0" id="info-klasifikasi">-</p>
-                                        </div>
-                                        <div class="info-group mb-2">
-                                            <label class="text-muted small mb-1">Periode Penyampaian</label>
-                                            <p class="fw-semibold mb-0" id="info-deskripsi-periode">-</p>
-                                        </div>
-                                        <div class="info-group mb-2">
-                                            <label class="text-muted small mb-1">Periode Penerimaan</label>
-                                            <p class="fw-semibold mb-0" id="info-periode-penerimaan">-</p>
-                                        </div>
-                                    </div>
+                        <!-- Jenis Data Information Section (infocard + PIC chips) -->
+                        <div id="jenis-data-info" class="mb-3" style="display: none;">
+                            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 8px 12px;">
+                                <div class="d-flex flex-wrap align-items-center" style="gap: 4px 16px; font-size: 11px; color: #868e96;">
+                                    <span><strong style="color:#495057;">ILAP</strong> <span id="info-nama-ilap">-</span></span>
+                                    <span style="color:#dee2e6;">|</span>
+                                    <span><strong style="color:#495057;">Kategori</strong> <span id="info-kategori-ilap">-</span></span>
+                                    <span style="color:#dee2e6;">|</span>
+                                    <span><strong style="color:#495057;">Wilayah</strong> <span id="info-kategori-wilayah">-</span></span>
+                                    <span style="color:#dee2e6;">|</span>
+                                    <span><strong style="color:#495057;">Tabel</strong> <span id="info-jenis-tabel">-</span></span>
+                                    <span style="color:#dee2e6;">|</span>
+                                    <span><strong style="color:#495057;">Klasifikasi</strong> <span id="info-klasifikasi">-</span></span>
+                                    <span style="color:#dee2e6;">|</span>
+                                    <span><strong style="color:#495057;">Penyampaian</strong> <span id="info-deskripsi-periode">-</span></span>
+                                    <span style="color:#dee2e6;">|</span>
+                                    <span><strong style="color:#495057;">Penerimaan</strong> <span id="info-periode-penerimaan">-</span></span>
                                 </div>
-                            </div>
-                            <div class="card-footer bg-light">
-                                <strong><i class="feather-users me-2"></i>PIC (Penanggung Jawab)</strong>
-                                <div class="row g-2 mt-2">
-                                    <div class="col-md-4">
-                                        <div class="info-group">
-                                            <label class="text-muted small mb-1">P3DE</label>
-                                            <p class="fw-semibold mb-0" id="info-pic-p3de">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="info-group">
-                                            <label class="text-muted small mb-1">PIDE</label>
-                                            <p class="fw-semibold mb-0" id="info-pic-pide">-</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="info-group">
-                                            <label class="text-muted small mb-1">PMDE</label>
-                                            <p class="fw-semibold mb-0" id="info-pic-pmde">-</p>
-                                        </div>
-                                    </div>
+                                <div class="d-flex flex-wrap align-items-center mt-1" style="gap: 6px; font-size: 11px;">
+                                    <span class="pic-chip pic-chip-p3de"><i class="feather-user" style="font-size:10px;"></i> P3DE: <span id="info-pic-p3de">-</span></span>
+                                    <span class="pic-chip pic-chip-pide"><i class="feather-user" style="font-size:10px;"></i> PIDE: <span id="info-pic-pide">-</span></span>
+                                    <span class="pic-chip pic-chip-pmde"><i class="feather-user" style="font-size:10px;"></i> PMDE: <span id="info-pic-pmde">-</span></span>
                                 </div>
                             </div>
                         </div>
@@ -298,8 +289,8 @@ input[type="date"] {
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label class="form-label">Data Prioritas</label>
-                                    <div class="info-group d-flex align-items-center justify-content-center" style="height: 28px;">
-                                        <span id="info-jenis-prioritas" class="badge bg-secondary">-</span>
+                                    <div class="d-flex align-items-center" style="height: 28px;">
+                                        <span id="info-jenis-prioritas" class="badge bg-secondary" style="width: fit-content;">-</span>
                                     </div>
                                 </div>
                             </div>
@@ -400,11 +391,10 @@ input[type="date"] {
                                     {% endif %}
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4" id="tgl-terima-vertikal-wrapper">
                                 <div class="mb-3">
                                     <label for="{{ form.tgl_terima_vertikal.id_for_label }}" class="form-label">{{ form.tgl_terima_vertikal.label }}<span class="text-danger" id="tgl-terima-vertikal-required" style="display: none;">*</span></label>
                                     <input type="date" class="form-control" id="id_tgl_terima_vertikal" name="tgl_terima_vertikal" value="{{ form.tgl_terima_vertikal.value|default:'' }}" placeholder="dd/mm/yyyy">
-                                    <small class="form-text text-muted" id="tgl-terima-vertikal-hint" style="display: none;">Tidak dapat diisi untuk kategori ILAP non-Regional</small>
                                     {% if form.tgl_terima_vertikal.errors %}
                                         <div class="invalid-feedback d-block">{{ form.tgl_terima_vertikal.errors }}</div>
                                     {% endif %}
@@ -621,6 +611,16 @@ input[type="date"] {
 {% block scripts %}
 <script>
     (function() {
+        // Select & date placeholder color helpers (available throughout this scope)
+        function updateSelectColor(selectEl) {
+            if (!selectEl) return;
+            selectEl.style.color = selectEl.value ? '#212529' : '#ced4da';
+        }
+        function updateDateColor(dateEl) {
+            if (!dateEl) return;
+            dateEl.style.color = dateEl.value ? '#212529' : '#ced4da';
+        }
+
         const periodeMapping = {
             'Harian': Array.from({length: 31}, (_, i) => ({value: i + 1, label: `Hari ${i + 1}`})),
             'Mingguan': Array.from({length: 52}, (_, i) => ({value: i + 1, label: `Minggu ${i + 1}`})),
@@ -650,6 +650,7 @@ input[type="date"] {
             periodeDataSelect.innerHTML = '<option value="">Pilih Jenis Data ILAP...</option>';
             document.getElementById('jenis-data-info').style.display = 'none';
             periodeDataCache = {};
+            updateSelectColor(periodeDataSelect);
 
             if (!ilapId) return;
 
@@ -665,6 +666,7 @@ input[type="date"] {
                             periodeDataSelect.appendChild(option);
                         });
                     }
+                    updateSelectColor(periodeDataSelect);
                     if (typeof onLoaded === 'function') onLoaded();
                 })
                 .catch(error => console.error('Error fetching periode data:', error));
@@ -711,6 +713,7 @@ input[type="date"] {
                 option.textContent = opt.label;
                 periodeSelect.appendChild(option);
             });
+            updateSelectColor(periodeSelect);
         }
 
         function checkJenisPrioritas() {
@@ -742,36 +745,38 @@ input[type="date"] {
         function updateTanggalTerimaVertikal() {
             const ilapSelect = document.getElementById('id_ilap');
             const tglTerimaVertikalInput = document.getElementById('id_tgl_terima_vertikal');
+            const tglTerimaVertikalWrapper = document.getElementById('tgl-terima-vertikal-wrapper');
             const requiredIndicator = document.getElementById('tgl-terima-vertikal-required');
-            const hintText = document.getElementById('tgl-terima-vertikal-hint');
             if (!ilapSelect || !tglTerimaVertikalInput) return;
-            
+
             const ilapId = ilapSelect.value;
             const ilapisRegional = {{ ilaps_regional_ids|safe }};
-            
+
             if (!ilapId) {
+                // No ILAP selected — show field normally
                 tglTerimaVertikalInput.required = false;
                 tglTerimaVertikalInput.disabled = false;
                 tglTerimaVertikalInput.style.opacity = '1';
+                if (tglTerimaVertikalWrapper) tglTerimaVertikalWrapper.style.display = '';
                 if (requiredIndicator) requiredIndicator.style.display = 'none';
-                if (hintText) hintText.style.display = 'none';
             } else {
                 const numIlapId = parseInt(ilapId);
                 const isRegional = ilapisRegional.includes(numIlapId);
-                
+
                 if (isRegional) {
+                    // Regional ILAP — show and require
                     tglTerimaVertikalInput.required = true;
                     tglTerimaVertikalInput.disabled = false;
                     tglTerimaVertikalInput.style.opacity = '1';
+                    if (tglTerimaVertikalWrapper) tglTerimaVertikalWrapper.style.display = '';
                     if (requiredIndicator) requiredIndicator.style.display = 'inline';
-                    if (hintText) hintText.style.display = 'none';
                 } else {
+                    // Nasional ILAP — hide the entire field
                     tglTerimaVertikalInput.required = false;
                     tglTerimaVertikalInput.disabled = true;
-                    tglTerimaVertikalInput.style.opacity = '0.6';
                     tglTerimaVertikalInput.value = '';
+                    if (tglTerimaVertikalWrapper) tglTerimaVertikalWrapper.style.display = 'none';
                     if (requiredIndicator) requiredIndicator.style.display = 'none';
-                    if (hintText) hintText.style.display = 'block';
                 }
             }
         }
@@ -793,8 +798,22 @@ input[type="date"] {
         document.addEventListener('DOMContentLoaded', function() {
             const ilapSelect = document.getElementById('id_ilap');
             if (ilapSelect) {
-                // Set placeholder for ILAP select
-                ilapSelect.innerHTML = '<option value="">Pilih ILAP...</option>' + ilapSelect.innerHTML;
+                // Remove duplicate placeholder if form already rendered one
+                const existingPlaceholders = Array.from(ilapSelect.options).filter(opt => !opt.value && (opt.text === 'Pilih ILAP' || opt.text === 'Pilih ILAP...' || opt.text === '---------'));
+                if (existingPlaceholders.length > 0) {
+                    // Keep first, remove rest
+                    existingPlaceholders[0].text = 'Pilih ILAP...';
+                    for (let i = 1; i < existingPlaceholders.length; i++) {
+                        existingPlaceholders[i].remove();
+                    }
+                } else {
+                    // No placeholder exists, add one
+                    const placeholder = document.createElement('option');
+                    placeholder.value = '';
+                    placeholder.textContent = 'Pilih ILAP...';
+                    ilapSelect.insertBefore(placeholder, ilapSelect.firstChild);
+                }
+                ilapSelect.value = '';
             }
             
             const periodeDataSelect = document.getElementById('id_periode_data');
@@ -829,28 +848,55 @@ input[type="date"] {
                 });
             }
             
-            function hideDataTidakTersediaOptions() {
+            function toggleTidakTersediaOptions(show) {
+                // Store removed options for restoration
+                if (!window._removedBentukOptions) window._removedBentukOptions = [];
+                if (!window._removedCaraOptions) window._removedCaraOptions = [];
+
                 if (bentukDataSelect) {
-                    Array.from(bentukDataSelect.options).forEach(opt => {
-                        if (opt.text.toLowerCase().includes('tidak tersedia')) opt.style.display = 'none';
-                    });
+                    if (show) {
+                        // Restore removed options
+                        window._removedBentukOptions.forEach(item => {
+                            bentukDataSelect.appendChild(item.opt);
+                        });
+                        window._removedBentukOptions = [];
+                    } else {
+                        // Remove "tidak tersedia" options
+                        Array.from(bentukDataSelect.options).forEach(opt => {
+                            if (opt.value && opt.text.toLowerCase().includes('tidak tersedia')) {
+                                window._removedBentukOptions.push({opt: opt, parent: bentukDataSelect});
+                                opt.remove();
+                            }
+                        });
+                        bentukDataSelect.value = '';
+                    }
                 }
                 if (caraPenyampaianSelect) {
-                    Array.from(caraPenyampaianSelect.options).forEach(opt => {
-                        if (opt.text.toLowerCase().includes('tidak tersedia')) opt.style.display = 'none';
-                    });
+                    if (show) {
+                        window._removedCaraOptions.forEach(item => {
+                            caraPenyampaianSelect.appendChild(item.opt);
+                        });
+                        window._removedCaraOptions = [];
+                    } else {
+                        Array.from(caraPenyampaianSelect.options).forEach(opt => {
+                            if (opt.value && opt.text.toLowerCase().includes('tidak tersedia')) {
+                                window._removedCaraOptions.push({opt: opt, parent: caraPenyampaianSelect});
+                                opt.remove();
+                            }
+                        });
+                        caraPenyampaianSelect.value = '';
+                    }
                 }
             }
-            
+
             function updateKetersediaanDependents() {
-                // Simpan status backup checkbox sebelumnya
-                const backupWasChecked = backupCheckbox ? backupCheckbox.checked : false;
-                
                 if (statusTidakTersedia && statusTidakTersedia.checked) {
                     if (alasanKetidaktersedianInput) {
                         alasanKetidaktersedianInput.disabled = false;
                         alasanKetidaktersedianInput.style.opacity = '1';
                     }
+                    // Show "tidak tersedia" options and auto-select them
+                    toggleTidakTersediaOptions(true);
                     if (bentukDataSelect) {
                         const tidakTersediaOption = Array.from(bentukDataSelect.options).find(
                             opt => opt.text.toLowerCase().includes('tidak tersedia')
@@ -884,6 +930,8 @@ input[type="date"] {
                         alasanKetidaktersedianInput.value = '';
                         alasanKetidaktersedianInput.style.opacity = '0.6';
                     }
+                    // Remove "tidak tersedia" options when data is "Tersedia"
+                    toggleTidakTersediaOptions(false);
                     if (bentukDataSelect) {
                         bentukDataSelect.value = '';
                         bentukDataSelect.disabled = false;
@@ -900,17 +948,26 @@ input[type="date"] {
                     }
                     if (backupCheckbox) {
                         backupCheckbox.disabled = false;
-                        // Kembalikan ke status default (checked)
                         backupCheckbox.checked = true;
                         const backupSection = document.getElementById('backup-data-section');
                         if (backupSection) backupSection.style.display = '';
                     }
                 }
             }
-            
-            hideDataTidakTersediaOptions();
+
             updateKetersediaanDependents();
             updateTanggalTerimaVertikal();
+
+            // Apply placeholder colors to all selects and date inputs
+            document.querySelectorAll('#tiket-rekam-form select').forEach(sel => {
+                updateSelectColor(sel);
+                sel.addEventListener('change', function() { updateSelectColor(sel); });
+            });
+            document.querySelectorAll('#tiket-rekam-form input[type="date"]').forEach(dat => {
+                updateDateColor(dat);
+                dat.addEventListener('input', function() { updateDateColor(dat); });
+                dat.addEventListener('change', function() { updateDateColor(dat); });
+            });
             
             if (ilapSelect) {
                 ilapSelect.addEventListener('change', function() {
@@ -1063,17 +1120,6 @@ input[type="date"] {
 </script>
 
 <style>
-.info-group {
-    padding: 0.5rem;
-    border-left: 3px solid #dee2e6;
-    background-color: #f8f9fa;
-    border-radius: 4px;
-}
-.info-group:hover {
-    background-color: #e9ecef;
-    border-left-color: #0d6efd;
-    transition: all 0.2s ease;
-}
 .card {
     border: none;
     box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
@@ -1091,5 +1137,27 @@ input[type="date"] {
     border-color: #86b7fe;
     box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
+/* PIC chips */
+.pic-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #495057;
+    background: #e9ecef;
+    white-space: nowrap;
+}
+.pic-chip i {
+    opacity: 0.6;
+}
+.pic-chip-p3de { background: #e7f5ee; color: #2b8a5e; }
+.pic-chip-p3de i { color: #2b8a5e; }
+.pic-chip-pide { background: #e8f0fe; color: #3266cc; }
+.pic-chip-pide i { color: #3266cc; }
+.pic-chip-pmde { background: #fff3e0; color: #c27803; }
+.pic-chip-pmde i { color: #c27803; }
 </style>
 {% endblock %}

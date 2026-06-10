@@ -181,6 +181,7 @@ urlpatterns = [
     path('tanda-terima-data/tikets-by-ilap/', views.tanda_terima_tikets_by_ilap, name='tanda_terima_tikets_by_ilap'),
     path('tanda-terima-data/create/', views.TandaTerimaDataCreateView.as_view(), name='tanda_terima_data_create'),
     path('tanda-terima-data/from-tiket/<int:tiket_pk>/create/', views.TandaTerimaDataFromTiketCreateView.as_view(), name='tanda_terima_data_from_tiket_create'),
+    path('tanda-terima-data/from-tiket/<int:pk>/tidak-terbit/', views.tidak_terbit_tanda_terima, name='tidak_terbit_tanda_terima'),
     path('tanda-terima-data/<int:pk>/update/', views.TandaTerimaDataUpdateView.as_view(), name='tanda_terima_data_update'),
     path('tanda-terima-data/<int:pk>/delete/', views.TandaTerimaDataDeleteView.as_view(), name='tanda_terima_data_delete'),
     # Monitoring Penyampaian Data URLs
@@ -244,6 +245,14 @@ urlpatterns = [
     path('laporan-kelengkapan-data/', views.LaporanKelengkapanDataView.as_view(), name='laporan_kelengkapan_data'),
     path('laporan-kelengkapan-data/data/', views.laporan_kelengkapan_data_data, name='laporan_kelengkapan_data_data'),
     path('laporan-kelengkapan-data/export/', views.laporan_kelengkapan_data_export, name='laporan_kelengkapan_data_export'),
+    # Laporan Rekap Penghimpunan dan Pengolahan Data
+    path('laporan-rekap-himpun-olah-data/', views.LaporanRekapHimpunOlahDataView.as_view(), name='laporan_rekap_himpun_olah_data'),
+    path('laporan-rekap-himpun-olah-data/data/', views.laporan_rekap_himpun_olah_data_data, name='laporan_rekap_himpun_olah_data_data'),
+    path('laporan-rekap-himpun-olah-data/export/', views.laporan_rekap_himpun_olah_data_export, name='laporan_rekap_himpun_olah_data_export'),
+    # Laporan Detail Penghimpunan dan Pengolahan Data
+    path('laporan-detail-himpun-olah-data/', views.LaporanDetailHimpunOlahDataView.as_view(), name='laporan_detail_himpun_olah_data'),
+    path('laporan-detail-himpun-olah-data/data/', views.laporan_detail_himpun_olah_data_data, name='laporan_detail_himpun_olah_data_data'),
+    path('laporan-detail-himpun-olah-data/export/', views.laporan_detail_himpun_olah_data_export, name='laporan_detail_himpun_olah_data_export'),
     # PIC PMDE URLs
     path('pic-pmde/', views.PICPMDEListView.as_view(), name='pic_pmde_list'),
     path('pic-pmde/data/', views.pic_pmde_data, name='pic_pmde_data'),

@@ -536,7 +536,7 @@
     <script src="{% static 'assets/vendors/js/select2-active.min.js' %}"></script>
     <script src="{% static 'assets/js/common-init.min.js' %}"></script>
     <script src="{% static 'assets/js/theme-customizer-init.min.js' %}"></script>
-    <script src="{% static 'assets/vendors/js/datatables.min.js' %}"></script>
+    <script src="{% static 'assets/vendors/js/dataTables.min.js' %}"></script>
     <script>
         // Cleanup stale modal backdrops that can block interaction on AJAX-heavy pages.
         document.addEventListener('hidden.bs.modal', function () {
@@ -661,36 +661,70 @@
 
                 if (!$tableWrapper.length) return;
 
-                const $placeholder = $tableWrapper.next('.dt-empty-placeholder');
-                const placeholderHtml = `
-                    <div class="dt-empty-placeholder text-center text-muted">
-                        <img src="{% static 'assets/images/empty-state.png' %}" alt="Tidak Ada Data" class="img-fluid" style="max-width: 200px; margin-bottom:8px;" />
-                        <p class="mb-1 fw-semibold">Tidak Ada Data yang Tersedia</p>
-                        <p class="mb-0 small">Data akan ditampilkan di sini setelah tersedia.</p>
-                    </div>
-                `;
+                // Check if this table should skip the custom empty state
+                // Add data-skip-empty-state attribute to a <table> to opt out
+                const skipEmptyState = $table.is('[data-skip-empty-state]');
 
-                let rowCount = 0;
-                if ($.fn.DataTable && $.fn.DataTable.isDataTable(table)) {
-                    const dataTable = $table.DataTable();
-                    rowCount = dataTable.rows({ filter: 'applied' }).data().length;
-                } else {
-                    rowCount = $table.find('tbody tr').filter(function () {
-                        return $(this).find('td').length && $(this).is(':visible');
-                    }).length;
+                if (skipEmptyState) {
+                    $tableWrapper.show();
+                    const $placeholder = $tableWrapper.next('.dt-empty-placeholder');
+                    if ($placeholder.length) {
+                        $placeholder.remove();
+                    }
+                    return;
                 }
 
-                if (rowCount === 0) {
-                    $tableWrapper.hide();
-                    if (!$placeholder.length) {
-                        $tableWrapper.after(placeholderHtml);
+                // Check if DataTable has 0 records to show custom empty placeholder
+                let rowCount = 0;
+                try {
+                    if ($.fn.DataTable && $.fn.DataTable.isDataTable(table)) {
+                        const dt = $(table).DataTable();
+                        rowCount = dt.rows({ filter: 'applied' }).count();
                     } else {
-                        $placeholder.html(placeholderHtml).show();
+                        // Not a DataTable — just show the wrapper
+                        $tableWrapper.show();
+                        const $placeholder = $tableWrapper.next('.dt-empty-placeholder');
+                        if ($placeholder.length) {
+                            $placeholder.remove();
+                        }
+                        return;
                     }
-                } else {
+                } catch (e) {
                     $tableWrapper.show();
-                    if ($placeholder.length) {
-                        $placeholder.hide();
+                    return;
+                }
+
+                // Keep table visible (header + footer stay), only customise the body empty row
+                $tableWrapper.show();
+
+                // Remove any external placeholder that may exist from previous logic
+                const $placeholder = $tableWrapper.next('.dt-empty-placeholder');
+                if ($placeholder.length) {
+                    $placeholder.remove();
+                }
+
+                const template = document.getElementById('dt-empty-placeholder-template');
+
+                if (rowCount === 0) {
+                    // DataTables puts an empty row in <tbody> — replace its content
+                    // with the rich placeholder (image + text) so header/footer remain.
+                    const $tbody = $table.find('tbody');
+                    const $emptyRow = $tbody.find('tr').first();
+                    if ($emptyRow.length) {
+                        const colCount = $table.find('thead th, thead td').length || 1;
+                        let placeholderHtml = '';
+                        if (template) {
+                            const tempDiv = document.createElement('div');
+                            tempDiv.appendChild(template.content.cloneNode(true));
+                            placeholderHtml = tempDiv.innerHTML;
+                        }
+                        if (placeholderHtml) {
+                            $emptyRow.html(
+                                '<td colspan="' + colCount + '" style="padding:0; border:none;">' +
+                                placeholderHtml +
+                                '</td>'
+                            );
+                        }
                     }
                 }
             }
@@ -1032,6 +1066,15 @@
     </script>
 
     {% block scripts %}{% endblock %}
+
+    <!-- Hidden template for DataTable empty state -->
+    <template id="dt-empty-placeholder-template">
+        <div class="dt-empty-placeholder text-center text-muted" style="padding: 40px 20px;">
+            <img src="{% static 'assets/images/empty-state.png' %}" alt="Tidak Ada Data" class="img-fluid" style="max-width: 200px; margin-bottom:8px;" />
+            <p class="mb-1 fw-semibold">Tidak Ada Data yang Tersedia</p>
+            <p class="mb-0 small">Data akan ditampilkan di sini setelah tersedia.</p>
+        </div>
+    </template>
 </body>
 
 </html>

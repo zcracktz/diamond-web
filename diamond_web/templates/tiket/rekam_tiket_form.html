@@ -202,7 +202,7 @@
                 Tiket</small>
         </div>
         <div class="card-body">
-            <form method="post" action="{{ form_action }}" id="tiket-rekam-form">
+            <form method="post" action="{{ form_action }}" id="tiket-rekam-form" novalidate>
                 {% csrf_token %}
                 <input type="hidden" name="old_db" value="0">
 
@@ -1577,10 +1577,67 @@
             if (btnConfirm) {
                 btnConfirm.addEventListener('click', function (e) {
                     e.preventDefault();
-                    if (!form.checkValidity()) {
-                        form.reportValidity();
+                    // Custom validation with Indonesian messages
+                    const errors = [];
+                    const now = new Date();
+
+                    // Required field checks
+                    const requiredFields = [
+                        { el: ilapSelect, label: 'ILAP' },
+                        { el: periodeDataSelect, label: 'Jenis Data ILAP' },
+                        { el: document.getElementById('id_periode'), label: 'Periode' },
+                        { el: tahunSelect, label: 'Tahun' },
+                        { el: document.getElementById('id_id_bentuk_data'), label: 'Bentuk Data' },
+                        { el: document.getElementById('id_id_cara_penyampaian'), label: 'Cara Penyampaian' },
+                        { el: document.getElementById('id_satuan_data'), label: 'Satuan Data' },
+                        { el: document.getElementById('id_tgl_terima_dip'), label: 'Tanggal Terima DIP' },
+                    ];
+                    requiredFields.forEach(f => {
+                        if (f.el && !f.el.value) {
+                            errors.push(f.label + ' wajib diisi.');
+                        }
+                    });
+
+                    // Backup fields — required when checkbox is checked
+                    if (backupCheckbox && backupCheckbox.checked) {
+                        if (!document.getElementById('backup_lokasi_backup').value) {
+                            errors.push('Lokasi Backup wajib diisi.');
+                        }
+                        if (!document.getElementById('backup_nama_file').value) {
+                            errors.push('Nama File wajib diisi.');
+                        }
+                        if (!document.getElementById('backup_id_media_backup').value) {
+                            errors.push('Media Backup wajib diisi.');
+                        }
+                    }
+
+                    // Date not in future
+                    const dateFields = [
+                        { el: document.getElementById('id_tanggal_surat_pengantar'), label: 'Tanggal Surat Pengantar' },
+                        { el: document.getElementById('id_tgl_terima_vertikal'), label: 'Tanggal Terima Vertikal' },
+                        { el: document.getElementById('id_tgl_terima_dip'), label: 'Tanggal Terima DIP' },
+                    ];
+                    dateFields.forEach(f => {
+                        if (f.el && f.el.value) {
+                            const d = new Date(f.el.value);
+                            if (d > now) {
+                                errors.push(f.label + ' tidak boleh lebih dari waktu saat ini.');
+                            }
+                        }
+                    });
+
+                    // Baris diterima — harus angka
+                    const barisEl = document.getElementById('id_baris_diterima');
+                    if (barisEl && barisEl.value && isNaN(barisEl.value)) {
+                        errors.push('Baris Diterima harus berupa angka.');
+                    }
+
+                    if (errors.length > 0) {
+                        const msg = errors.join('\n');
+                        alert('Harap perbaiki isian berikut:\n\n' + msg);
                         return;
                     }
+
                     populateConfirmationModal();
                     confirmModal.show();
                 });
@@ -1615,6 +1672,37 @@
                 backupCheckbox.addEventListener('change', toggleBackupSection);
                 toggleBackupSection();
             }
+
+            // Prefill combobox from POST data (when server re-renders after validation error)
+            (function prefillFromPost() {
+                if (!ilapSelect) return;
+                const ilapValue = ilapSelect.value;
+                if (!ilapValue) return;
+
+                // Save periode data selected value + label BEFORE updatePeriodeDataDropdown clears them
+                let savedPdValue = null;
+                let savedPdLabel = null;
+                if (periodeDataSelect && periodeDataSelect.value) {
+                    savedPdValue = periodeDataSelect.value;
+                    const pdOpt = Array.from(periodeDataSelect.options).find(o => o.value === savedPdValue);
+                    if (pdOpt) savedPdLabel = pdOpt.textContent;
+                }
+
+                // Find the label for the selected ILAP option
+                const ilapOpt = Array.from(ilapSelect.options).find(o => o.value === ilapValue);
+                if (ilapOpt) {
+                    selectIlapOption(ilapValue, ilapOpt.textContent);
+                }
+
+                // Trigger change to load periode data options
+                ilapSelect.dispatchEvent(new Event('change'));
+                updatePeriodeDataDropdown(function () {
+                    if (savedPdValue && savedPdLabel) {
+                        selectPeriodeDataOption(savedPdValue, savedPdLabel);
+                        periodeDataSelect.dispatchEvent(new Event('change'));
+                    }
+                });
+            })();
 
             (function prefillFromUrl() {
                 const urlParams = new URLSearchParams(window.location.search);

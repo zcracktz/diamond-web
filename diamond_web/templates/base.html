@@ -324,6 +324,16 @@
             backdrop-filter: none !important;
         }
 
+        /* Custom backdrop for critical session warning/timeout modals to darken the background */
+        #sessionWarningModal, #sessionTimeoutModal {
+            z-index: 100000 !important;
+        }
+        #sessionWarningModal ~ .modal-backdrop, #sessionTimeoutModal ~ .modal-backdrop {
+            z-index: 99990 !important;
+            background-color: #0f172a !important;
+            opacity: 0.75 !important;
+        }
+
         body.modal-open .nxl-navigation,
         body.modal-open .nxl-header,
         body.modal-open .nxl-content,
@@ -949,12 +959,24 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/id.js"></script>
     <script>
-        // Initialize Flatpickr on all date inputs globally
+        // Initialize Flatpickr on all date and datetime inputs globally
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof flatpickr !== 'undefined') {
+                // Regular date inputs (captures current time / 00:00:00 behind the scenes, displays date only)
                 flatpickr('input[type="date"]', {
                     locale: 'id',
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'Y-m-d H:i:s',
+                    altInput: true,
+                    altFormat: 'd F Y',
+                    allowInput: true
+                });
+
+                // Datetime-local inputs (captures date + hour/min/sec behind the scenes, displays date only)
+                flatpickr('input[type="datetime-local"]', {
+                    locale: 'id',
+                    enableTime: true,
+                    enableSeconds: true,
+                    dateFormat: 'Y-m-d H:i:s',
                     altInput: true,
                     altFormat: 'd F Y',
                     allowInput: true
@@ -1527,6 +1549,13 @@
 
             function onShowWarning() {
                 if (warningModalShown || timeoutModalShown) return;
+
+                // Close any active modals to prevent stacking/overlap clashes
+                document.querySelectorAll('.modal.show').forEach(m => {
+                    const inst = bootstrap.Modal.getInstance(m);
+                    if (inst) inst.hide();
+                });
+
                 warningModalShown = true;
 
                 // remove existing modal if any
@@ -1622,6 +1651,13 @@
 
             function showTimeoutModal() {
                 if (timeoutModalShown) return;
+
+                // Close any active modals to prevent stacking/overlap clashes
+                document.querySelectorAll('.modal.show').forEach(m => {
+                    const inst = bootstrap.Modal.getInstance(m);
+                    if (inst) inst.hide();
+                });
+
                 timeoutModalShown = true;
 
                 // remove existing timeout modal if any

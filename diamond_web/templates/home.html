@@ -1700,13 +1700,12 @@
                 {% if is_admin_pide or is_pide or is_kasi_pide %}
                 <!-- PIDE/Admin PIDE/Kasi PIDE: Tiket Selesai -->
                 <div class="card stretch stretch-full datatable-card" data-category="tiket_selesai_pide" style="display:none;">
-                    <div class="card-header bg-transparent border-bottom-0">
-                        <h5 class="card-title text-success">Tiket Selesai PIDE</h5>
-                    </div>
-                    <div class="card-body p-0 border-top pt-3">
-                        <div class="px-4 pb-3">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <div class="d-flex align-items-center dashboard-metrics">
+                    <div class="card-header" style="display: block;">
+                        <!-- Unified Dashboard Toolbar -->
+                        <div class="mb-2" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); padding: 10px 16px;">
+                            <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap dashboard-toolbar-row">
+                                <!-- Left Section: Metrics -->
+                                <div class="d-flex align-items-center dashboard-metrics flex-wrap gap-y-2">
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="avatar avatar-xs bg-soft-primary text-primary" style="background-color: rgba(0, 189, 251, 0.1) !important; color: #00BDFB !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
                                             <i class="feather-file-text fs-16"></i>
@@ -1716,7 +1715,7 @@
                                             <h5 class="fw-bolder mb-0 text-primary" id="summary-total-tiket-tiket_selesai_pide" style="color: #00BDFB !important; font-size: 14px; line-height: 1.2;">0</h5>
                                         </div>
                                     </div>
-                                    <div style="border-left: 1.5px solid #e2e8f0; height: 28px;"></div>
+                                    <div style="border-left: 1.5px solid #e2e8f0; height: 28px; margin: 0 8px;"></div>
                                     <div class="d-flex align-items-center gap-2 summary-interactive-indicator" id="summary-ilap-wrapper-tiket_selesai_pide" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Belum ada data ILAP">
                                         <div class="avatar avatar-xs bg-soft-warning text-warning" style="background-color: rgba(239, 186, 34, 0.1) !important; color: #EFBA22 !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
                                             <i class="feather-home fs-16"></i>
@@ -1726,7 +1725,7 @@
                                             <h5 class="fw-bolder mb-0 text-warning" id="summary-total-ilap-tiket_selesai_pide" style="color: #EFBA22 !important; font-size: 14px; line-height: 1.2;">0</h5>
                                         </div>
                                     </div>
-                                    <div style="border-left: 1.5px solid #e2e8f0; height: 28px;"></div>
+                                    <div style="border-left: 1.5px solid #e2e8f0; height: 28px; margin: 0 8px;"></div>
                                     <div class="d-flex align-items-center gap-2 summary-interactive-indicator" id="summary-jenis-wrapper-tiket_selesai_pide" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Belum ada data Jenis">
                                         <div class="avatar avatar-xs bg-soft-success text-success" style="background-color: rgba(22, 192, 152, 0.1) !important; color: #16C098 !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
                                             <i class="feather-database fs-16"></i>
@@ -1736,16 +1735,37 @@
                                             <h5 class="fw-bolder mb-0 text-success" id="summary-total-jenis-data-tiket_selesai_pide" style="color: #16C098 !important; font-size: 14px; line-height: 1.2;">0</h5>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="d-flex align-items-center gap-3">
-                                    <select class="form-select form-select-sm periode-filter-dropdown" data-category="tiket_selesai_pide" style="min-width: 150px; font-size: 12px; height: 32px;">
-                                        <option value="">Semua Periode Data</option>
-                                    </select>
+                                    
+                                    <div style="border-left: 1.5px solid #e2e8f0; height: 28px; margin: 0 8px;"></div>
+                                    <div class="d-flex align-items-center gap-2 summary-interactive-indicator">
+                                        <div class="avatar avatar-xs bg-soft-indigo text-indigo" style="background-color: rgba(99, 102, 241, 0.1) !important; color: #6366f1 !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                            <i class="feather-calendar fs-16"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <small class="text-muted d-block" style="font-size: 11px; font-weight: 500; line-height: 1.2; padding-left: 4px;">Periode Data</small>
+                                            <select class="form-select form-select-sm periode-filter-dropdown border-0 bg-transparent py-0 ps-1 pe-4" data-category="tiket_selesai_pide" style="font-size: 13px; font-weight: bold; color: #6366f1; min-width: 140px; box-shadow: none; cursor: pointer; height: auto;">
+                                                <option value="">Semua Periode</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     {% if is_kasi_pide %}
-                                    <select class="form-select form-select-sm pic-pide-filter-dropdown" data-category="tiket_selesai_pide" style="min-width: 150px; font-size: 12px; height: 32px;">
-                                        <option value="">Semua PIC</option>
-                                    </select>
+                                    <div style="border-left: 1.5px solid #e2e8f0; height: 28px; margin: 0 8px;"></div>
+                                    <div class="d-flex align-items-center gap-2 summary-interactive-indicator">
+                                        <div class="avatar avatar-xs bg-soft-danger text-danger" style="background-color: rgba(239, 68, 68, 0.1) !important; color: #ef4444 !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                            <i class="feather-users fs-16"></i>
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <small class="text-muted d-block" style="font-size: 11px; font-weight: 500; line-height: 1.2; padding-left: 4px;">PIC PIDE</small>
+                                            <select class="form-select form-select-sm pic-pide-filter-dropdown border-0 bg-transparent py-0 ps-1 pe-4" data-category="tiket_selesai_pide" style="font-size: 13px; font-weight: bold; color: #ef4444; min-width: 110px; box-shadow: none; cursor: pointer; height: auto;">
+                                                <option value="">Semua PIC</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     {% endif %}
+                                </div>
+                                <!-- Right Section: Filter Group for Pantauan Switch -->
+                                <div class="d-flex align-items-center gap-2 flex-wrap" id="filter-group-tiket_selesai_pide">
                                 </div>
                             </div>
                         </div>
@@ -3030,7 +3050,10 @@
             2: { bg: '#f1f5f9', fg: '#475569', border: '#cbd5e1' },  // Diteliti
             3: { bg: '#fee2e2', fg: '#b91c1c', border: '#fecaca' },  // Dikembalikan
             4: { bg: '#fef3c7', fg: '#b45309', border: '#fde68a' },  // Dikirim ke PIDE
-            5: { bg: '#ede9fe', fg: '#6d28d9', border: '#ddd6fe' }   // Identifikasi
+            5: { bg: '#ede9fe', fg: '#6d28d9', border: '#ddd6fe' },  // Identifikasi
+            6: { bg: '#e0e7ff', fg: '#4338ca', border: '#c7d2fe' },  // Pengendalian Mutu (indigo)
+            7: { bg: '#fef2f2', fg: '#dc2626', border: '#fecaca' },  // Dibatalkan (red)
+            8: { bg: '#dcfce7', fg: '#15803d', border: '#bbf7d0' }   // Selesai (green)
         };
 
         const masihDiP3dePideColumns = [

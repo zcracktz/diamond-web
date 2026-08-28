@@ -632,8 +632,16 @@ def home_data(request):
     if category == 'tiket_selesai_pide':
         from diamond_web.utils import format_periode
         qs = qs.select_related('id_periode_data__id_periode_pengiriman')
-        # Populate filter options before applying them
-        raw_periods = qs.values_list(
+        
+        pic_filter = request.GET.get('pic_pide_filter')
+        p_filter = request.GET.get('periode_filter')
+
+        qs_for_periode = qs
+        if pic_filter and is_kasi_pide(request.user):
+            qs_for_periode = qs_for_periode.filter(tiketpic__id_user_id=pic_filter, tiketpic__role=TiketPIC.Role.PIDE)
+
+        # Populate periode_list using qs filtered by pic
+        raw_periods = qs_for_periode.values_list(
             'id_periode_data__id_periode_pengiriman__periode_penerimaan', 'periode', 'tahun'
         ).distinct()
         for desc, per, thn in raw_periods:
@@ -642,16 +650,27 @@ def home_data(request):
                 fmt = format_periode(desc, per, thn)
                 periode_list.append({'id': val, 'text': fmt})
         
+        qs_for_pic = qs
+        if p_filter:
+            parts = p_filter.split('_')
+            if len(parts) == 2:
+                per, thn = parts
+                if per: qs_for_pic = qs_for_pic.filter(periode=per)
+                else: qs_for_pic = qs_for_pic.filter(Q(periode__isnull=True) | Q(periode=''))
+                if thn: qs_for_pic = qs_for_pic.filter(tahun=thn)
+                else: qs_for_pic = qs_for_pic.filter(Q(tahun__isnull=True) | Q(tahun=''))
+
+        # Populate pic_pide_list using qs filtered by periode
         if is_kasi_pide(request.user):
             raw_pics = TiketPIC.objects.filter(
-                id_tiket__in=qs, role=TiketPIC.Role.PIDE
+                id_tiket__in=qs_for_pic, role=TiketPIC.Role.PIDE
             ).values_list('id_user__id', 'id_user__first_name', 'id_user__last_name').distinct()
             for uid, fn, ln in raw_pics:
                 name = f"{fn} {ln}".strip() or f"User {uid}"
                 pic_pide_list.append({'id': uid, 'text': name})
 
-        # Apply filters
-        p_filter = request.GET.get('periode_filter')
+        # Apply both filters to the main qs
+        qs = qs_for_periode
         if p_filter:
             parts = p_filter.split('_')
             if len(parts) == 2:
@@ -660,10 +679,6 @@ def home_data(request):
                 else: qs = qs.filter(Q(periode__isnull=True) | Q(periode=''))
                 if thn: qs = qs.filter(tahun=thn)
                 else: qs = qs.filter(Q(tahun__isnull=True) | Q(tahun=''))
-
-        pic_filter = request.GET.get('pic_pide_filter')
-        if pic_filter and is_kasi_pide(request.user):
-            qs = qs.filter(tiketpic__id_user_id=pic_filter, tiketpic__role=TiketPIC.Role.PIDE)
 
     records_total = qs.count()
 

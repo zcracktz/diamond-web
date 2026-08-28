@@ -193,9 +193,22 @@ def home(request):
         belum_mulai_proses_identifikasi_qs = pide_qs.filter(status_tiket=STATUS_DIKIRIM_KE_PIDE)
         dalam_proses_identifikasi_qs = pide_qs.filter(status_tiket=STATUS_IDENTIFIKASI)
 
+        if is_kasi_pide(request.user):
+            tiket_selesai_pide_qs = Tiket.objects.filter(
+                tiketpic__role=TiketPIC.Role.PIDE,
+                status_tiket__gte=STATUS_PENGENDALIAN_MUTU
+            ).distinct()
+        else:
+            tiket_selesai_pide_qs = Tiket.objects.filter(
+                tiketpic__id_user=request.user,
+                tiketpic__role=TiketPIC.Role.PIDE,
+                status_tiket__gte=STATUS_PENGENDALIAN_MUTU
+            ).distinct()
+
         context['pide_category_metrics'] = {
             'belum_mulai_proses_identifikasi': _get_category_metrics(belum_mulai_proses_identifikasi_qs),
             'dalam_proses_identifikasi': _get_category_metrics(dalam_proses_identifikasi_qs),
+            'tiket_selesai_pide': _get_category_metrics(tiket_selesai_pide_qs),
         }
 
         context['pide_category_counts'] = {
@@ -324,6 +337,19 @@ def _get_pide_tiket_ids(user):
     ).values_list('id_tiket', flat=True)
 
 
+def _get_tiket_selesai_pide_ids(user):
+    """Get the set of tiket IDs that the user has worked on as PIDE.
+    Kasi sees all tickets ever worked on by any PIDE PIC.
+    """
+    if is_kasi_pide(user):
+        return TiketPIC.objects.filter(
+            role=TiketPIC.Role.PIDE
+        ).values_list('id_tiket', flat=True)
+    return TiketPIC.objects.filter(
+        id_user=user, role=TiketPIC.Role.PIDE
+    ).values_list('id_tiket', flat=True)
+
+
 def _get_pmde_tiket_ids(user):
     """Get the set of tiket IDs in the user's PMDE scope.
 
@@ -360,7 +386,6 @@ def _build_tiket_base_qs(category, user):
         'id_periode_data__id_sub_jenis_data_ilap__id_ilap',
         'id_periode_data__id_sub_jenis_data_ilap',
         'id_periode_data__id_sub_jenis_data_ilap__id_jenis_tabel',
-        'id_periode_data__id_periode_pengiriman',
         'id_bentuk_data',
         'id_cara_penyampaian',
         'id_status_penelitian',
@@ -497,6 +522,10 @@ def _build_tiket_base_qs(category, user):
             _get_pide_tiket_ids,
             Q(status_tiket=STATUS_IDENTIFIKASI)
         ),
+        'tiket_selesai_pide': (
+            _get_tiket_selesai_pide_ids,
+            Q(status_tiket__gte=STATUS_PENGENDALIAN_MUTU)
+        ),
         # PMDE categories
         'dalam_proses_pengendalian_mutu': (
             _get_pmde_tiket_ids,
@@ -573,6 +602,7 @@ def home_data(request):
         'belum_dikirim_ke_pide', 'pengembalian_seluruhnya_dari_pide',
         'pengembalian_sebagian_dari_pide', 'diklarifikasi',
         'belum_mulai_proses_identifikasi', 'dalam_proses_identifikasi',
+        'tiket_selesai_pide',
         'dalam_proses_pengendalian_mutu', 'masih_di_p3de_pide',
         'periode_tiket_null_p3de',
         'tiket_pengendalian_mutu_tanpa_pic',
@@ -595,6 +625,45 @@ def home_data(request):
 
     if qs is None:
         return JsonResponse({'error': 'Access denied or invalid category'}, status=403)
+
+    periode_list = []
+    pic_pide_list = []
+
+    if category == 'tiket_selesai_pide':
+        from diamond_web.utils import format_periode
+        qs = qs.select_related('id_periode_data__id_periode_pengiriman')
+        # Populate filter options before applying them
+        raw_periods = qs.values_list(
+            'id_periode_data__id_periode_pengiriman__periode_penerimaan', 'periode', 'tahun'
+        ).distinct()
+        for desc, per, thn in raw_periods:
+            if per or thn:
+                val = f"{per or ''}_{thn or ''}"
+                fmt = format_periode(desc, per, thn)
+                periode_list.append({'id': val, 'text': fmt})
+        
+        if is_kasi_pide(request.user):
+            raw_pics = TiketPIC.objects.filter(
+                id_tiket__in=qs, role=TiketPIC.Role.PIDE
+            ).values_list('id_user__id', 'id_user__first_name', 'id_user__last_name').distinct()
+            for uid, fn, ln in raw_pics:
+                name = f"{fn} {ln}".strip() or f"User {uid}"
+                pic_pide_list.append({'id': uid, 'text': name})
+
+        # Apply filters
+        p_filter = request.GET.get('periode_filter')
+        if p_filter:
+            parts = p_filter.split('_')
+            if len(parts) == 2:
+                per, thn = parts
+                if per: qs = qs.filter(periode=per)
+                else: qs = qs.filter(Q(periode__isnull=True) | Q(periode=''))
+                if thn: qs = qs.filter(tahun=thn)
+                else: qs = qs.filter(Q(tahun__isnull=True) | Q(tahun=''))
+
+        pic_filter = request.GET.get('pic_pide_filter')
+        if pic_filter and is_kasi_pide(request.user):
+            qs = qs.filter(tiketpic__id_user_id=pic_filter, tiketpic__role=TiketPIC.Role.PIDE)
 
     records_total = qs.count()
 
@@ -938,7 +1007,7 @@ def home_data(request):
                 pide_dt = obj.tgl_rekam_pide or obj.tgl_kirim_pide
                 date_val = pide_dt.strftime('%d-%m-%Y') if pide_dt else ''
                 date_order = pide_dt.strftime('%Y-%m-%d') if pide_dt else ''
-            elif category in ('dalam_proses_pengendalian_mutu', 'tiket_pengendalian_mutu_tanpa_pic'):
+            elif category in ('dalam_proses_pengendalian_mutu', 'tiket_pengendalian_mutu_tanpa_pic', 'tiket_selesai_pide'):
                 date_val = obj.tgl_transfer.strftime('%d-%m-%Y') if obj.tgl_transfer else ''
                 date_order = obj.tgl_transfer.strftime('%Y-%m-%d') if obj.tgl_transfer else ''
             else:
@@ -975,6 +1044,38 @@ def home_data(request):
                     'tanggal': date_val,
                     'tanggal_order': date_order,
                     'is_prioritas': obj.id_jenis_prioritas_data_id is not None,
+                    'actions': action_html,
+                })
+            elif category == 'masih_di_p3de_pide':
+                data.append({
+                    'nomor_tiket': obj.nomor_tiket,
+                    'nama_ilap': nama_ilap,
+                    'nama_sub_jenis_data': nama_sub_jenis,
+                    'nama_tabel_I': nama_tabel_I,
+                    # Same rule the Quality Control page uses for its P3DE/PIDE
+                    # upstream sections (sq.baris_data): baris lengkap until
+                    # identification has actually split it, baris I from there
+                    # on. Computed as the `jumlah_baris` annotation so it can
+                    # also be sorted at the database.
+                    'jumlah_baris': obj.jumlah_baris,
+                    'status_tiket': STATUS_LABELS.get(obj.status_tiket, ''),
+                    'status_tiket_code': obj.status_tiket,
+                    'tanggal': date_val,
+                    'tanggal_order': date_order,
+                    'is_prioritas': obj.id_jenis_prioritas_data_id is not None,
+                    'actions': action_html,
+                })
+            elif category == 'tiket_selesai_pide':
+                data.append({
+                    'nomor_tiket': obj.nomor_tiket,
+                    'nama_ilap': nama_ilap,
+                    'nama_sub_jenis_data': nama_sub_jenis,
+                    'periode_data': format_periode_tiket(obj) or '-',
+                    'baris_lengkap': obj.baris_lengkap or 0,
+                    'tanggal': date_val,
+                    'tanggal_order': date_order,
+                    'status_tiket': STATUS_LABELS.get(obj.status_tiket, ''),
+                    'status_tiket_code': obj.status_tiket,
                     'actions': action_html,
                 })
             elif category == 'special_request':
@@ -1083,6 +1184,8 @@ def home_data(request):
             'total_jenis_data': total_jenis_data,
             'ilap_list': ilap_list,
             'jenis_data_list': jenis_data_list,
+            'periode_list': periode_list if is_tiket_category and category == 'tiket_selesai_pide' else [],
+            'pic_pide_list': pic_pide_list if is_tiket_category and category == 'tiket_selesai_pide' else [],
             'critical_count': critical_count,
             'warning_count': warning_count,
             'new_count': new_count,

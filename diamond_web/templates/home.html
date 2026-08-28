@@ -700,6 +700,15 @@
                             {% endif %}
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link tiket-filter-link" href="javascript:void(0);" data-filter="tiket_selesai_pide">
+                            <span class="icon-bg-soft icon-bg-soft-green"><i class="feather-check-circle" style="color:#16C098"></i></span>
+                            <span>Tiket Selesai</span>
+                            {% if pide_category_counts.tiket_selesai_pide %}
+                            <span class="badge bg-success ms-auto">{{ pide_category_counts.tiket_selesai_pide }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
                     {% if not is_p3de %}
                     <li class="nav-item">
                         <a class="nav-link tiket-filter-link" href="javascript:void(0);" data-filter="special_request">
@@ -1678,6 +1687,87 @@
                                         <th>Baris CDE</th>
                                         <th>Tgl Rekam PIDE</th>
                                         <th>Prioritas</th>
+                                        <th class="col-actions">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tiket Selesai PIDE -->
+                <div class="card stretch stretch-full datatable-card" data-category="tiket_selesai_pide" style="display:none;">
+                    <div class="card-header" style="display: block;">
+                        <!-- Unified Dashboard Toolbar -->
+                        <div class="mb-2" style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); padding: 10px 16px;">
+                            <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap dashboard-toolbar-row">
+                                <!-- Left Section: Metrics -->
+                                <div class="d-flex align-items-center dashboard-metrics">
+                                    <!-- Total Tiket -->
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar avatar-xs bg-soft-primary text-primary" style="background-color: rgba(0, 189, 251, 0.1) !important; color: #00BDFB !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                            <i class="feather-file-text fs-16"></i>
+                                        </div>
+                                        <div>
+                                            <small class="text-muted d-block" style="font-size: 11px; font-weight: 500; line-height: 1.2;">Tiket</small>
+                                            <h5 class="fw-bolder mb-0 text-primary" id="summary-total-tiket-tiket_selesai_pide" style="color: #00BDFB !important; font-size: 14px; line-height: 1.2;">0</h5>
+                                        </div>
+                                    </div>
+                                    <!-- Divider -->
+                                    <div style="border-left: 1.5px solid #e2e8f0; height: 28px;"></div>
+                                    <!-- Jumlah ILAP -->
+                                    <div class="d-flex align-items-center gap-2 summary-interactive-indicator" id="summary-ilap-wrapper-tiket_selesai_pide" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Belum ada data ILAP">
+                                         <div class="avatar avatar-xs bg-soft-warning text-warning" style="background-color: rgba(239, 186, 34, 0.1) !important; color: #EFBA22 !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                             <i class="feather-home fs-16"></i>
+                                         </div>
+                                         <div>
+                                             <small class="text-muted d-block" style="font-size: 11px; font-weight: 500; line-height: 1.2;">ILAP</small>
+                                             <h5 class="fw-bolder mb-0 text-warning" id="summary-total-ilap-tiket_selesai_pide" style="color: #EFBA22 !important; font-size: 14px; line-height: 1.2;">0</h5>
+                                         </div>
+                                     </div>
+                                     <!-- Divider -->
+                                     <div style="border-left: 1.5px solid #e2e8f0; height: 28px;"></div>
+                                     <!-- Jenis Data -->
+                                     <div class="d-flex align-items-center gap-2 summary-interactive-indicator" id="summary-jenis-wrapper-tiket_selesai_pide" style="cursor: pointer;" data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="top" title="Belum ada data Jenis">
+                                         <div class="avatar avatar-xs bg-soft-success text-success" style="background-color: rgba(22, 192, 152, 0.1) !important; color: #16C098 !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                             <i class="feather-database fs-16"></i>
+                                         </div>
+                                         <div>
+                                             <small class="text-muted d-block" style="font-size: 11px; font-weight: 500; line-height: 1.2;">Jenis Data</small>
+                                             <h5 class="fw-bolder mb-0 text-success" id="summary-total-jenis-data-tiket_selesai_pide" style="color: #16C098 !important; font-size: 14px; line-height: 1.2;">0</h5>
+                                         </div>
+                                     </div>
+                                     <!-- Divider -->
+                                     <div style="border-left: 1.5px solid #e2e8f0; height: 28px;"></div>
+                                     <div class="d-flex align-items-center gap-2">
+                                         <select class="form-select form-select-sm periode-filter-dropdown" data-category="tiket_selesai_pide" style="width: auto; font-size: 11px; height: 32px; border-radius: 6px; border-color: #e2e8f0; cursor: pointer;">
+                                             <option value="">Semua Periode Data</option>
+                                         </select>
+                                     </div>
+                                     {% if is_kasi_pide %}
+                                     <div class="d-flex align-items-center gap-2">
+                                         <select class="form-select form-select-sm pic-pide-filter-dropdown" data-category="tiket_selesai_pide" style="width: auto; font-size: 11px; height: 32px; border-radius: 6px; border-color: #e2e8f0; cursor: pointer;">
+                                             <option value="">Semua PIC</option>
+                                         </select>
+                                     </div>
+                                     {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body custom-card-action p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 tiket-datatable" id="table-tiket_selesai_pide" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Nomor Tiket</th>
+                                        <th>Nama ILAP</th>
+                                        <th>Jenis Data</th>
+                                        <th>Periode Data</th>
+                                        <th>Baris Lengkap</th>
+                                        <th>Tgl Transfer</th>
+                                        <th>Status Tiket</th>
                                         <th class="col-actions">Aksi</th>
                                     </tr>
                                 </thead>
@@ -2863,6 +2953,45 @@
             { data: 'actions', title: 'Aksi', orderable: false, searchable: false, className: 'col-actions' }
         ];
 
+        const tiketSelesaiPideColumns = [
+            { data: 'nomor_tiket', title: 'Nomor Tiket' },
+            { data: 'nama_ilap', title: 'Nama ILAP' },
+            { data: 'nama_sub_jenis_data', title: 'Jenis Data' },
+            { data: 'periode_data', title: 'Periode Data' },
+            { 
+                data: 'baris_lengkap', 
+                title: 'Jml Baris Data<br>Lengkap',
+                width: '110px',
+                render: function(data, type, row) {
+                    if (type === 'display') return createFixedBadge(data, '#dcfce7', '#15803d', '#bbf7d0');
+                    return (data === null || data === undefined || data === '' || isNaN(data)) ? 0 : Number(data);
+                }
+            },
+            { 
+                data: 'tanggal', 
+                title: 'Tanggal',
+                render: function(data, type, row) {
+                    if (type === 'order' || type === 'type') {
+                        return row.tanggal_order || '';
+                    }
+                    return data || '';
+                }
+            },
+            {
+                data: 'status_tiket',
+                title: 'Status Tiket',
+                render: function (data, type, row) {
+                    if (type !== 'display') return data || '';
+                    const style = STATUS_BADGE_STYLES[row.status_tiket_code]
+                        || { bg: '#f1f5f9', fg: '#475569', border: '#cbd5e1' };
+                    return '<span class="badge" style="background-color:' + style.bg
+                        + ';color:' + style.fg + ';border:1px solid ' + style.border + ';">'
+                        + (data || '-') + '</span>';
+                }
+            },
+            { data: 'actions', title: 'Aksi', orderable: false, searchable: false, className: 'col-actions' }
+        ];
+
         const pmdeDalamProsesColumns = [
             { data: 'nomor_tiket', title: 'Nomor Tiket' },
             { data: 'nama_ilap', title: 'Nama ILAP' },
@@ -3068,6 +3197,35 @@
             }
             if (category === 'dalam_proses_identifikasi') {
                 let cols = pideDalamProsesColumns;
+            // Clone columns so we don't modify the global ones (important since they are shared)
+            cols = cols.slice();
+            
+            // Inject Prioritas column if it's a tiket category
+            if (!category.startsWith('jenis_data_tanpa_pic')) {
+                const actionIdx = cols.findIndex(c => c.data === 'actions');
+                const prioritasCol = {
+                    data: 'is_prioritas',
+                    title: 'Prioritas',
+                    width: '80px',
+                    orderable: false,
+                    searchable: false,
+                    render: function(data, type) {
+                        if (type === 'display') {
+                            return data ? '<span class="badge bg-soft-danger text-danger border border-danger">Ya</span>' : '-';
+                        }
+                        return data;
+                    }
+                };
+                if (actionIdx !== -1) {
+                    cols.splice(actionIdx, 0, prioritasCol);
+                } else {
+                    cols.push(prioritasCol);
+                }
+            }
+            return cols;
+            }
+            if (category === 'tiket_selesai_pide') {
+                let cols = tiketSelesaiPideColumns;
             // Clone columns so we don't modify the global ones (important since they are shared)
             cols = cols.slice();
             
@@ -3528,6 +3686,31 @@
                         const el = document.getElementById(`count-${key}-${category}`);
                         if (el) el.textContent = buckets[key] || 0;
                     });
+
+                    // Populate custom dropdown filters for tiket_selesai_pide
+                    if (category === 'tiket_selesai_pide') {
+                        const periodeSelect = document.querySelector(`.periode-filter-dropdown[data-category="${category}"]`);
+                        if (periodeSelect && json.summary.periode_list) {
+                            const currentVal = periodeSelect.value;
+                            let optionsHtml = '<option value="">Semua Periode Data</option>';
+                            json.summary.periode_list.forEach(function(opt) {
+                                const selected = (opt.id === currentVal) ? 'selected' : '';
+                                optionsHtml += `<option value="${opt.id}" ${selected}>${opt.text}</option>`;
+                            });
+                            periodeSelect.innerHTML = optionsHtml;
+                        }
+
+                        const picSelect = document.querySelector(`.pic-pide-filter-dropdown[data-category="${category}"]`);
+                        if (picSelect && json.summary.pic_pide_list) {
+                            const currentVal = picSelect.value;
+                            let optionsHtml = '<option value="">Semua PIC</option>';
+                            json.summary.pic_pide_list.forEach(function(opt) {
+                                const selected = (String(opt.id) === String(currentVal)) ? 'selected' : '';
+                                optionsHtml += `<option value="${opt.id}" ${selected}>${opt.text}</option>`;
+                            });
+                            picSelect.innerHTML = optionsHtml;
+                        }
+                    }
                 }
             });
 
@@ -3541,6 +3724,13 @@
                         d.category = category;
                         if (activeAgeGroups[category]) {
                             d.age_group = activeAgeGroups[category];
+                        }
+                        if (category === 'tiket_selesai_pide') {
+                            const periodeSelect = document.querySelector(`.periode-filter-dropdown[data-category="${category}"]`);
+                            if (periodeSelect) d.periode_filter = periodeSelect.value;
+                            
+                            const picSelect = document.querySelector(`.pic-pide-filter-dropdown[data-category="${category}"]`);
+                            if (picSelect) d.pic_pide_filter = picSelect.value;
                         }
                     }
                 },
@@ -3704,8 +3894,18 @@
                     datatableTables[category].ajax.reload();
                 }
             });
+            });
         });
         
+        // Bind dropdown filters change handler
+        document.addEventListener('change', function(e) {
+            if (e.target.classList.contains('periode-filter-dropdown') || e.target.classList.contains('pic-pide-filter-dropdown')) {
+                const category = e.target.getAttribute('data-category');
+                if (category && datatableTables[category]) {
+                    datatableTables[category].ajax.reload();
+                }
+            }
+        });
         // Initialize Bootstrap tooltips
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.forEach(function (tooltipTriggerEl) {

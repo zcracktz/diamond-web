@@ -1147,8 +1147,18 @@
             if ($('#pmde-table').length) pmdeTable = initRoleTable('#pmde-table', '#pmde-search-row', "{% url 'pic_pmde_data' %}", isAdminPMDE);
 
             // Column Search bindings
+            // Debounce utility to prevent spamming server on fast typing
+            function debounce(func, wait) {
+                let timeout;
+                return function(...args) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
+                };
+            }
+
+            // Column Search bindings
             function bindColumnSearch(searchRowId, tableInstance, resetBtnId) {
-                $(searchRowId + ' input').on('keyup change', function () {
+                $(searchRowId + ' input').on('input', debounce(function () {
                     if (tableInstance && typeof tableInstance.column === 'function') {
                         tableInstance.column($(this).data('column')).search($(this).val());
                     }
@@ -1168,14 +1178,18 @@
                     } else {
                         $(resetBtnId).fadeOut(200);
                     }
-                });
+                }, 400)); // 400ms debounce
 
                 $(resetBtnId).on('click', function () {
                     $(searchRowId + ' input').val('');
                     $(searchRowId + ' input').each(function () {
                         tableInstance.column($(this).data('column')).search('');
                     });
-                    tableInstance.draw();
+                    if (tableInstance && tableInstance.ajax && typeof tableInstance.ajax.reload === 'function') {
+                        tableInstance.ajax.reload();
+                    } else if (tableInstance && typeof tableInstance.draw === 'function') {
+                        tableInstance.draw();
+                    }
                     $(this).fadeOut(200);
                 });
             }

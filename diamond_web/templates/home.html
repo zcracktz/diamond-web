@@ -1749,7 +1749,7 @@
 
                                     {% if is_kasi_pide %}
                                     <div style="border-left: 1.5px solid #e2e8f0; height: 28px; margin: 0 8px;"></div>
-                                    <div class="d-flex align-items-center gap-2 summary-interactive-indicator" style="cursor: pointer;" onclick="openFilterModal('pic_pide', 'tiket_selesai_pide', 'Pilih PIC PIDE', 'feather-users', 'bg-soft-danger', 'text-danger')">
+                                    <div class="d-flex align-items-center gap-2 summary-interactive-indicator" style="cursor: pointer;" onclick="openFilterModal('pic-pide', 'tiket_selesai_pide', 'Pilih PIC PIDE', 'feather-users', 'bg-soft-danger', 'text-danger')">
                                         <div class="avatar avatar-xs bg-soft-danger text-danger" style="background-color: rgba(239, 68, 68, 0.1) !important; color: #ef4444 !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
                                             <i class="feather-users fs-16"></i>
                                         </div>
@@ -3694,7 +3694,7 @@
                 return;
             }
             
-            const borderCol = window.currentFilterModalType === 'pic_pide' ? '#ef4444' : '#0c92ff';
+            const borderCol = window.currentFilterModalType === 'pic-pide' ? '#ef4444' : '#0c92ff';
 
             filtered.forEach((item, idx) => {
                 const itemEl = document.createElement('a');

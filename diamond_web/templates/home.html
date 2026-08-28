@@ -1737,13 +1737,13 @@
                                     </div>
                                     
                                     <div style="border-left: 1.5px solid #e2e8f0; height: 28px; margin: 0 8px;"></div>
-                                    <div class="d-flex align-items-center gap-2 summary-interactive-indicator" style="cursor: pointer;" onclick="openFilterModal('periode', 'tiket_selesai_pide', 'Pilih Periode Data', 'feather-calendar', 'bg-soft-indigo', 'text-indigo')">
-                                        <div class="avatar avatar-xs bg-soft-indigo text-indigo" style="background-color: rgba(99, 102, 241, 0.1) !important; color: #6366f1 !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
+                                    <div class="d-flex align-items-center gap-2 summary-interactive-indicator" style="cursor: pointer;" onclick="openFilterModal('periode', 'tiket_selesai_pide', 'Pilih Periode Data', 'feather-calendar', 'bg-soft-primary', 'text-primary')">
+                                        <div class="avatar avatar-xs bg-soft-primary text-primary" style="background-color: rgba(12, 146, 255, 0.1) !important; color: #0c92ff !important; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;">
                                             <i class="feather-calendar fs-16"></i>
                                         </div>
                                         <div class="d-flex flex-column justify-content-center">
                                             <small class="text-muted d-block" style="font-size: 11px; font-weight: 500; line-height: 1.2;">Periode Data</small>
-                                            <h5 class="fw-bolder mb-0" id="summary-periode-label" style="color: #6366f1 !important; font-size: 14px; line-height: 1.2;">Semua</h5>
+                                            <h5 class="fw-bolder mb-0" id="summary-periode-label" style="color: #0c92ff !important; font-size: 14px; line-height: 1.2;">Semua</h5>
                                         </div>
                                     </div>
 
@@ -3648,17 +3648,17 @@
             renderModalList(currentModalList, this.value);
         });
 
-        let currentFilterModalType = '';
-        let currentFilterModalCategory = '';
-        let filterListModalInstance = null;
+        window.currentFilterModalType = '';
+        window.currentFilterModalCategory = '';
+        window.filterListModalInstance = null;
 
-        function openFilterModal(filterType, category, title, iconClass, softBgClass, textClass) {
-            if (!filterListModalInstance) {
-                filterListModalInstance = new bootstrap.Modal(document.getElementById('filterListModal'));
+        window.openFilterModal = function(filterType, category, title, iconClass, softBgClass, textClass) {
+            if (!window.filterListModalInstance) {
+                window.filterListModalInstance = new bootstrap.Modal(document.getElementById('filterListModal'));
             }
             document.getElementById('filterListModalLabel').textContent = title;
-            currentFilterModalType = filterType;
-            currentFilterModalCategory = category;
+            window.currentFilterModalType = filterType;
+            window.currentFilterModalCategory = category;
             
             const iconContainer = document.getElementById('filter-modal-icon-container');
             const iconEl = document.getElementById('filter-modal-icon');
@@ -3677,11 +3677,11 @@
                 text: opt.text
             }));
             
-            renderFilterModalList(options, '');
-            filterListModalInstance.show();
-        }
+            window.renderFilterModalList(options, '');
+            window.filterListModalInstance.show();
+        };
         
-        function renderFilterModalList(list, filterText = '') {
+        window.renderFilterModalList = function(list, filterText = '') {
             const listContainer = document.getElementById('filter-modal-list');
             listContainer.innerHTML = '';
             
@@ -3694,7 +3694,7 @@
                 return;
             }
             
-            const borderCol = currentFilterModalType === 'pic_pide' ? '#ef4444' : '#6366f1';
+            const borderCol = window.currentFilterModalType === 'pic_pide' ? '#ef4444' : '#0c92ff';
 
             filtered.forEach((item, idx) => {
                 const itemEl = document.createElement('a');
@@ -3710,26 +3710,26 @@
                 
                 itemEl.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const selectEl = document.querySelector(`.${currentFilterModalType}-filter-dropdown[data-category="${currentFilterModalCategory}"]`);
+                    const selectEl = document.querySelector(`.${window.currentFilterModalType}-filter-dropdown[data-category="${window.currentFilterModalCategory}"]`);
                     if (selectEl) {
                         selectEl.value = item.id;
                         selectEl.dispatchEvent(new Event('change', { bubbles: true }));
                     }
-                    filterListModalInstance.hide();
+                    window.filterListModalInstance.hide();
                 });
                 
                 listContainer.appendChild(itemEl);
             });
-        }
+        };
         
         document.getElementById('filter-modal-search').addEventListener('input', function() {
-            const selectEl = document.querySelector(`.${currentFilterModalType}-filter-dropdown[data-category="${currentFilterModalCategory}"]`);
+            const selectEl = document.querySelector(`.${window.currentFilterModalType}-filter-dropdown[data-category="${window.currentFilterModalCategory}"]`);
             if (selectEl) {
                 const options = Array.from(selectEl.options).map(opt => ({
                     id: opt.value,
                     text: opt.text
                 }));
-                renderFilterModalList(options, this.value);
+                window.renderFilterModalList(options, this.value);
             }
         });
 

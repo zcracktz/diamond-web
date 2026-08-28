@@ -711,6 +711,15 @@
                         </a>
                     </li>
                     {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link tiket-filter-link" href="javascript:void(0);" data-filter="tiket_selesai_pide">
+                            <span class="icon-bg-soft icon-bg-soft-green"><i class="feather-check-circle" style="color:#16C098"></i></span>
+                            <span>Tiket Selesai</span>
+                            {% if pide_category_counts.tiket_selesai_pide %}
+                            <span class="badge bg-success ms-auto">{{ pide_category_counts.tiket_selesai_pide }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
                 </ul>
                 {% if is_admin_pide %}
                 <div class="role-section-header" style="border-top:1px solid #eee; padding-top:10px;">
@@ -1687,14 +1696,7 @@
                         </div>
                     </div>
                 </div>
-                {% if is_admin_pide or is_pide or is_kasi_pide %}
-                <div class="nav-item-wrapper">
-                    <a href="javascript:void(0);" class="nav-link tiket-filter-link d-flex justify-content-between align-items-center" data-filter="tiket_selesai_pide">
-                        <span><i class="feather-check-circle me-2 text-success"></i>Tiket Selesai</span>
-                        <span class="badge bg-soft-success text-success rounded-pill">0</span>
-                    </a>
-                </div>
-                {% endif %}
+
                 {% if is_admin_pide or is_pide or is_kasi_pide %}
                 <!-- PIDE/Admin PIDE/Kasi PIDE: Tiket Selesai -->
                 <div class="card stretch stretch-full datatable-card" data-category="tiket_selesai_pide" style="display:none;">

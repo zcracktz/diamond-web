@@ -1744,9 +1744,6 @@
                                         <div class="d-flex flex-column justify-content-center">
                                             <small class="text-muted d-block" style="font-size: 11px; font-weight: 500; line-height: 1.2;">Periode Data</small>
                                             <h5 class="fw-bolder mb-0" id="summary-periode-label" style="color: #6366f1 !important; font-size: 14px; line-height: 1.2;">Semua</h5>
-                                            <select class="periode-filter-dropdown" data-category="tiket_selesai_pide" style="display: none;">
-                                                <option value="">Semua Periode Data</option>
-                                            </select>
                                         </div>
                                     </div>
 
@@ -1759,9 +1756,6 @@
                                         <div class="d-flex flex-column justify-content-center">
                                             <small class="text-muted d-block" style="font-size: 11px; font-weight: 500; line-height: 1.2;">PIC PIDE</small>
                                             <h5 class="fw-bolder mb-0" id="summary-pic-label" style="color: #ef4444 !important; font-size: 14px; line-height: 1.2;">Semua</h5>
-                                            <select class="pic-pide-filter-dropdown" data-category="tiket_selesai_pide" style="display: none;">
-                                                <option value="">Semua PIC</option>
-                                            </select>
                                         </div>
                                     </div>
                                     {% endif %}
@@ -1771,6 +1765,18 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Hidden Data Filters used by datatable JS -->
+                    <div style="display: none !important;">
+                        <select class="periode-filter-dropdown" data-category="tiket_selesai_pide">
+                            <option value="">Semua Periode Data</option>
+                        </select>
+                        {% if is_kasi_pide %}
+                        <select class="pic-pide-filter-dropdown" data-category="tiket_selesai_pide">
+                            <option value="">Semua PIC</option>
+                        </select>
+                        {% endif %}
                     </div>
                     <div class="card-body custom-card-action p-0">
                         <div class="table-responsive">

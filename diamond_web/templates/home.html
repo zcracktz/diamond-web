@@ -1759,6 +1759,14 @@
                                         </div>
                                     </div>
                                     {% endif %}
+                                    
+                                    <!-- Global Reset Filters Button -->
+                                    <div style="border-left: 1.5px solid #e2e8f0; height: 28px; margin: 0 8px;" class="d-none" id="global-reset-filter-divider-tiket_selesai_pide"></div>
+                                    <div class="d-none ms-1" id="global-reset-filter-container-tiket_selesai_pide">
+                                        <button type="button" class="btn btn-sm btn-light text-danger border border-danger-subtle d-flex align-items-center justify-content-center" onclick="resetAllSummaryFilters('tiket_selesai_pide')" style="font-size: 11.5px; padding: 4px 10px; font-weight: 500; text-transform: none; border-radius: 6px; background-color: #fef2f2;">
+                                            <i class="feather-refresh-ccw me-1" style="font-size: 11px;"></i> Reset Filter
+                                        </button>
+                                    </div>
                                 </div>
                                 <!-- Right Section: Filter Group for Pantauan Switch -->
                                 <div class="d-flex align-items-center gap-2 flex-wrap" id="filter-group-tiket_selesai_pide">
@@ -3754,6 +3762,64 @@
             if (window.filterListModalInstance) window.filterListModalInstance.hide();
         };
 
+        window.resetAllSummaryFilters = function(category) {
+            let changed = false;
+            
+            const periodeSelect = document.querySelector(`.periode-filter-dropdown[data-category="${category}"]`);
+            if (periodeSelect && periodeSelect.value !== '') {
+                periodeSelect.value = '';
+                const label = document.getElementById('summary-periode-label');
+                if (label) label.innerText = 'Semua';
+                changed = true;
+            }
+            
+            const picSelect = document.querySelector(`.pic-pide-filter-dropdown[data-category="${category}"]`);
+            if (picSelect && picSelect.value !== '') {
+                picSelect.value = '';
+                const label = document.getElementById('summary-pic-label');
+                if (label) label.innerText = 'Semua';
+                changed = true;
+            }
+            
+            if (datatableTables[category]) {
+                const searchInput = document.querySelector(`.dt-search input[type="search"]`) || document.querySelector(`input.search-input[data-category="${category}"]`);
+                if (searchInput && searchInput.value !== '') {
+                    searchInput.value = '';
+                    changed = true;
+                }
+                if (changed) {
+                    datatableTables[category].search('').draw();
+                }
+            }
+            
+            window.checkActiveFilters(category);
+        };
+
+        window.checkActiveFilters = function(category) {
+            const resetContainer = document.getElementById(`global-reset-filter-container-${category}`);
+            const divider = document.getElementById(`global-reset-filter-divider-${category}`);
+            if (!resetContainer) return;
+            
+            const periodeSelect = document.querySelector(`.periode-filter-dropdown[data-category="${category}"]`);
+            const picSelect = document.querySelector(`.pic-pide-filter-dropdown[data-category="${category}"]`);
+            
+            let isActive = false;
+            if (periodeSelect && periodeSelect.value !== '') isActive = true;
+            if (picSelect && picSelect.value !== '') isActive = true;
+            
+            if (datatableTables[category]) {
+                if (datatableTables[category].search() !== '') isActive = true;
+            }
+            
+            if (isActive) {
+                resetContainer.classList.remove('d-none');
+                if (divider) divider.classList.remove('d-none');
+            } else {
+                resetContainer.classList.add('d-none');
+                if (divider) divider.classList.add('d-none');
+            }
+        };
+
         // Initialize server-side datatables for each category
         function initDatatable(table) {
             const categoryCard = table.closest('[data-category]');
@@ -3991,6 +4057,7 @@
                             // Sync state on every DataTable redraw
                             $(table).on('draw.dt', function() {
                                 toggleClearBtn();
+                                window.checkActiveFilters(category);
                             });
                         }
                     }
